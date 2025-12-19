@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./style.css";
+import CredentialForm from "./components/credentialForm";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <h1 className="bg-red-500">Hello</h1>
+    <CredentialForm />
   </React.StrictMode>
 );

@@ -1,11 +1,26 @@
+import { FormData, useFormData } from "@/entrypoints/hooks/formData";
 import { Save, KeyRound, Link2, Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 const CredentialForm = () => {
   const [showKey, setShowKey] = useState(false);
+  const { formData, setFormData } = useFormData();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev: FormData) => ({ ...prev, [name]: value }));
+  };
+
+const handleSubmit=(e:React.FormEvent)=>{
+  e.preventDefault()
+  chrome.storage.local.set({formData},()=>{
+    toast.success("API Credentials saved successfully!")
+  })
+}
 
   return (
-    <div className="w-120 h-120 bg-[#0b1220]/70 backdrop-blur-xl text-white p-5 font-sans border border-white/10 rounded-2xl shadow-2xl">
+    <div className="w-[24rem] bg-[#0b1220]/70 backdrop-blur-xl text-white p-5 font-sans border border-white/10 rounded-2xl shadow-2xl">
       <div className="mb-6">
         <h2 className="text-xl font-semibold tracking-tight mt-9 text-center">
           API Configuration
@@ -22,7 +37,10 @@ const CredentialForm = () => {
             <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="url"
+              name="endpoint"
               required
+              value={formData?.endpoint}
+              onChange={handleChange}
               placeholder="https://api.example.com/v1"
               className="w-full bg-white/5 backdrop-blur-md pl-10 pr-3 py-2.5 rounded-lg text-sm 
                          border border-white/10
@@ -41,6 +59,9 @@ const CredentialForm = () => {
               type={showKey ? "text" : "password"}
               placeholder="sk-••••••••••"
               required
+              name="apiKey"
+              onChange={handleChange}
+              value={formData?.apiKey}
               className="w-full bg-white/5 backdrop-blur-md pl-10 pr-10 py-2.5 rounded-lg text-sm 
                          border border-white/10
                          focus:outline-none focus:ring-2 focus:ring-indigo-500/40 

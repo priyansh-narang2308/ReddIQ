@@ -6,7 +6,8 @@ export default defineConfig({
   manifest: ({ browser, manifestVersion, mode, command }) => {
     return {
       name: "ReddIQ",
-      description: "Chrome Extension",  
+      description: "Chrome Extension",
+      permissions: ["storage"],
     };
   },
 });

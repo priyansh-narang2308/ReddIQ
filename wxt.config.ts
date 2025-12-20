@@ -6,8 +6,17 @@ export default defineConfig({
   manifest: ({ browser, manifestVersion, mode, command }) => {
     return {
       name: "ReddIQ",
-      description: "Chrome Extension",
-      permissions: ["storage"],
+      description:
+        "A chrome extension for reddit where you can get comment and post insights using AI",
+      permissions: [
+        "storage",
+        "tabs",
+        "activeTab",
+        "scripting",
+        "contextMenus",
+        "declarativeNetRequest",
+      ],
+  
     };
   },
 });

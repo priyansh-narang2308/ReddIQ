@@ -12,7 +12,7 @@ export default defineBackground({
         title: "Comments Insight",
         contexts: ["all"],
       });
-    });
+  });
 
     chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       if (info.menuItemId === "post") {

@@ -13,5 +13,27 @@ export default defineBackground({
         contexts: ["all"],
       });
     });
+
+    chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+      if (info.menuItemId === "post") {
+        chrome.tabs.sendMessage(
+          tab?.id!,
+          { action: "post" },
+          function (response) {
+            console.info("Response: ", response);
+          }
+        );
+      }
+
+      if (info.menuItemId === "comment") {
+        chrome.tabs.sendMessage(
+          tab?.id!,
+          { action: "comment" },
+          function (response) {
+            console.info("Response: ", response);
+          }
+        );
+      }
+    });
   },
 });

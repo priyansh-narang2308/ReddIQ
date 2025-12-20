@@ -1,1 +1,1 @@
-# ReddIQ1:03
+# ReddIQ - Chrome extension for Reddit!!

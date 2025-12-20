@@ -10,6 +10,7 @@ export const useFormData = () => {
     apiKey: "",
     endpoint: "",
   });
+  const hydrated = React.useRef(false);
 
   React.useEffect(() => {
     try {
@@ -22,6 +23,7 @@ export const useFormData = () => {
               endpoint: storedFormData.endpoint || "",
             });
           }
+          hydrated.current = true;
         });
         return;
       }
@@ -36,14 +38,20 @@ export const useFormData = () => {
           });
         }
       }
+      // mark hydrated for non-extension environments
+      hydrated.current = true;
     } catch (err) {
-
       console.warn("Failed to load stored formData:", err);
+      // even on error mark hydrated to allow future writes
+      hydrated.current = true;
     }
   }, []);
 
- 
   React.useEffect(() => {
+    // Don't persist until we've hydrated from storage. On mount the
+    // initial empty state would otherwise overwrite the stored value.
+    if (!hydrated.current) return;
+
     try {
       if (typeof chrome !== "undefined" && chrome?.storage?.local?.set) {
         chrome.storage.local.set({ formData });

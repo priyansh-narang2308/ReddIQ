@@ -15,22 +15,27 @@ export default defineBackground({
   });
 
     chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-      if (info.menuItemId === "post") {
-        chrome.tabs.sendMessage(
-          tab?.id!,
-          { action: "post" },
-          function (response) {
-            console.info("Response: ", response);
-          }
-        );
+      if (!tab?.id) {
+        console.error("❌ No tab ID found for context menu click");
+        return;
       }
 
-      if (info.menuItemId === "comment") {
+      console.log("🖱️ Context menu clicked:", info.menuItemId, "on tab:", tab.id);
+
+      if (info.menuItemId === "post" || info.menuItemId === "comment") {
         chrome.tabs.sendMessage(
-          tab?.id!,
-          { action: "comment" },
-          function (response) {
-            console.info("Response: ", response);
+          tab.id,
+          { action: info.menuItemId },
+          (response) => {
+            if (chrome.runtime.lastError) {
+              console.error(
+                "❌ Error sending message to content script:",
+                chrome.runtime.lastError.message
+              );
+              console.log("💡 Tip: Try refreshing the page you're on.");
+            } else {
+              console.log("✅ Message sent successfully, response:", response);
+            }
           }
         );
       }

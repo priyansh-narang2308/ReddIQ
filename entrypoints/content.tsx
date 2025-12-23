@@ -1,5 +1,4 @@
-import React from "react";
-import "../popup/style.css";
+import "./popup/style.css"
 import { createRoot } from "react-dom/client";
 
 console.log("🚀 REDDIQ CONTENT SCRIPT INJECTED!");
@@ -12,7 +11,6 @@ export default defineContentScript({
     let activeUi: any = null;
 
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      console.log("📩 REDDIQ Message Received:", message);
       (async () => {
         try {
           if (message.action === "post" || message.action === "comment") {
@@ -26,7 +24,6 @@ export default defineContentScript({
             sendResponse?.({ success: true });
           }
         } catch (err: any) {
-          console.error("❌ REDDIQ Error mounting UI:", err);
           sendResponse?.({ success: false, error: String(err) });
         }
       })();
@@ -42,6 +39,7 @@ const createUI = async (ctx: any, message: string) => {
     position: "overlay",
 
     onMount: (container) => {
+      console.log("🏗️ REDDIQ onMount Called", container);
       
       const app = document.createElement("div");
       container.append(app);

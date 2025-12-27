@@ -1,6 +1,5 @@
 export default defineBackground({
   main() {
-    // this is triggered when u install the chrome extension
     chrome.runtime.onInstalled.addListener(() => {
       chrome.contextMenus.create({
         id: "post",
@@ -16,7 +15,7 @@ export default defineBackground({
 
     chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       if (!tab?.id) {
-        console.error("❌ No tab ID found for context menu click");
+        console.error("No tab ID found for context menu click");
         return;
       }
 
@@ -29,10 +28,10 @@ export default defineBackground({
           (response) => {
             if (chrome.runtime.lastError) {
               console.error(
-                "❌ Error sending message to content script:",
+                "Error sending message to content script:",
                 chrome.runtime.lastError.message
               );
-              console.log("💡 Tip: Try refreshing the page you're on.");
+              console.log("Tip: Try refreshing the page you're on.");
             } else {
               console.log("✅ Message sent successfully, response:", response);
             }

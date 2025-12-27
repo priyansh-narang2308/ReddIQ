@@ -1,4 +1,4 @@
-import { FormData, useFormData } from "@/entrypoints/hooks/formData";
+import { FormData, useFormData } from "@/shared/hooks/formData";
 import { Save, KeyRound, Link2, Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";

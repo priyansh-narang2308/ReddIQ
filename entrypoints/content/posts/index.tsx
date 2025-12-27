@@ -54,26 +54,67 @@ const PostModal = ({ posts, onRemove }: PostProps) => {
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar relative">
         {loading ? (
-          <div className="h-full flex flex-col pt-2 animate-in fade-in duration-500">
-            <div className="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-orange-500/0 via-orange-500 to-orange-500/0 animate-shimmer" />
+          <div className="relative h-full flex flex-col pt-4 animate-in fade-in zoom-in-95 duration-700">
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent animate-[shimmer_2s_infinite] opacity-50" />
 
-            <div className="flex flex-col items-center justify-center py-6 space-y-3">
+            <div className="flex flex-col items-center justify-center py-8 space-y-4">
               <div className="relative">
-                <div className="w-12 h-12 rounded-full border-2 border-orange-500/20 border-t-orange-500 animate-spin" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                <div className="absolute inset-0 bg-orange-500/20 blur-xl rounded-full animate-pulse" />
+
+                <div className="relative w-14 h-14">
+                  <svg
+                    className="w-full h-full animate-spin text-orange-500"
+                    viewBox="0 0 100 100"
+                  >
+                    <circle
+                      className="opacity-20"
+                      cx="50"
+                      cy="50"
+                      r="42"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="transparent"
+                    />
+                    <circle
+                      className="opacity-100"
+                      cx="50"
+                      cy="50"
+                      r="42"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      strokeDasharray="60 100"
+                      strokeLinecap="round"
+                      fill="transparent"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-2.5 h-2.5 bg-orange-500 rounded-full shadow-[0_0_10px_rgba(249,115,22,0.8)] animate-pulse" />
+                  </div>
                 </div>
               </div>
-              <div className="text-center">
-                <p className="text-zinc-100 font-bold tracking-tight">
-                  Analyzing Posts...
+
+              <div className="text-center space-y-1">
+                <h3 className="text-zinc-100 font-semibold tracking-wide text-sm uppercase">
+                  Fetching Posts..
+                </h3>
+                <p className="text-zinc-500 text-xs font-medium animate-pulse">
+                  Processing real-time data...
                 </p>
               </div>
             </div>
 
-            <div className="space-y-4 px-1 opacity-40">
-              <SkeletonPost />
-              <SkeletonPost />
+            <div className="relative space-y-4 px-2">
+              <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/50 via-transparent to-transparent pointer-events-none z-10" />
+
+              <div className="opacity-60 hover:opacity-80 transition-opacity duration-500">
+                <SkeletonPost />
+              </div>
+              <div className="opacity-30 hover:opacity-50 transition-opacity duration-500">
+                <SkeletonPost />
+              </div>
+              <div className="opacity-10 pointer-events-none">
+                <SkeletonPost />
+              </div>
             </div>
           </div>
         ) : (
@@ -100,8 +141,14 @@ const PostModal = ({ posts, onRemove }: PostProps) => {
                     {post.title}
                   </h3>
 
-                  <p className="text-zinc-400 text-sm line-clamp-2 mb-4 leading-relaxed">
-                    {post.description}
+                  <p
+                    className={`text-sm mb-4 leading-relaxed ${
+                      post.description
+                        ? "text-zinc-400 line-clamp-2"
+                        : "text-zinc-500 italic"
+                    }`}
+                  >
+                    {post.description || "No description available"}
                   </p>
 
                   <div className="flex items-center justify-between pt-4 border-t border-zinc-800/50">

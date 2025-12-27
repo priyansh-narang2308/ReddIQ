@@ -1,3 +1,4 @@
+import Header from "@/shared/common/header";
 import "../popup/style.css";
 import { CreateContentElement } from "@/shared/common";
 
@@ -26,12 +27,21 @@ export default defineContentScript({
                 uiContainer,
                 shadowContainer,
                 (root) => {
+                  const onRemove = () => {
+                    root?.unmount();
+                    shadowContainer.remove();
+                  };
                   return (
-                    <div className="p-6 bg-amber-500 rounded-4xl border-8 border-white shadow-xl transform transition-all duration-300 w-fit">
-                      <h1 className="text-4xl font-black text-black italic tracking-tighter uppercase">
-                        Hello World
-                      </h1>
-                    </div>
+                    <>
+                      <Header
+                        title={`${
+                          message.action.charAt(0).toUpperCase() +
+                          message.action.slice(1)
+                        } Insights`}
+                        count={10}
+                        onRemove={onRemove}
+                      />
+                    </>
                   );
                 }
               );

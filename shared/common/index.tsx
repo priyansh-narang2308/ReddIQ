@@ -29,33 +29,37 @@ export const CreateContentElement = (
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.75)",
-    backdropFilter: "blur(4px)",
+    backgroundColor: "transparent",
+    backdropFilter: "none",
     color: "white",
     fontFamily: "sans-serif",
+    pointerEvents: "none",
   };
 
   Object.assign(shadowContainer.style, styles);
 
+  uiContainer.style.width = "100%";
+  uiContainer.style.height = "100%";
+  uiContainer.style.display = "flex";
+  uiContainer.style.flexDirection = "column";
+
   const root = createRoot(app);
 
-  shadowContainer.onclick = (e) => {
-    if (e.target === shadowContainer) {
-      root.unmount();
-      shadowContainer.remove();
-    }
-  };
+
 
   root.render(
     <React.StrictMode>
       <Toaster />
       <div
+        className="fixed inset-0 w-screen h-screen flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-md"
         style={{
           pointerEvents: "auto",
           animation: "fadeIn 0.3s ease-out",
         }}
       >
-        {callback(root)}
+        <div className="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-xl shadow-[0_0_50px_-12px_rgba(249,115,22,0.2)] overflow-hidden">
+          {callback(root)}
+        </div>
       </div>
     </React.StrictMode>
   );

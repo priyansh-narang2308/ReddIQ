@@ -2,14 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "@/shared/common/header";
 import { useFormData } from "@/shared/hooks/formData";
 import Markdown from "react-markdown";
-import {
-  MessageSquare,
-  User,
-  Clock,
-  ArrowUpCircle,
-  Sparkles,
-  Quote,
-} from "lucide-react";
+import { Clock, ArrowUpCircle, Sparkles, Quote } from "lucide-react";
 
 interface CommentsProps {
   post: any;

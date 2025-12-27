@@ -1,6 +1,6 @@
-import Header from "@/shared/common/header";
 import "../popup/style.css";
 import { CreateContentElement } from "@/shared/common";
+import PostModal from "./posts";
 
 export default defineContentScript({
   matches: ["*://*/*"],
@@ -33,14 +33,7 @@ export default defineContentScript({
                   };
                   return (
                     <>
-                      <Header
-                        title={`${
-                          message.action.charAt(0).toUpperCase() +
-                          message.action.slice(1)
-                        } Insights`}
-                        count={10}
-                        onRemove={onRemove}
-                      />
+                      <PostModal posts={[]} onRemove={onRemove} />
                     </>
                   );
                 }

@@ -57,9 +57,7 @@ export const CreateContentElement = (
           animation: "fadeIn 0.3s ease-out",
         }}
       >
-        <div className="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-xl shadow-[0_0_50px_-12px_rgba(249,115,22,0.2)] overflow-hidden">
-          {callback(root)}
-        </div>
+        {callback(root)}
       </div>
     </React.StrictMode>
   );

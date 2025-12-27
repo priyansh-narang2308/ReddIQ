@@ -1,6 +1,8 @@
 import "../popup/style.css";
 import { CreateContentElement } from "@/shared/common";
 import PostModal from "./posts";
+import CommentsModal from "./comments";
+
 
 export default defineContentScript({
   matches: ["*://*/*"],
@@ -33,7 +35,11 @@ export default defineContentScript({
                   };
                   return (
                     <>
-                      <PostModal posts={[]} onRemove={onRemove} />
+                      {message.action === "post" ? (
+                        <PostModal posts={[]} onRemove={onRemove} />
+                      ) : (
+                        <CommentsModal post={{}} comment={{}} onRemove={onRemove} />
+                      )}
                     </>
                   );
                 }

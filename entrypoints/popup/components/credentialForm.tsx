@@ -46,7 +46,7 @@ const CredentialForm = () => {
   };
 
   return (
-    <div className="w-[24rem] bg-[#0b1220]/70 backdrop-blur-xl text-white p-5 font-sans border border-white/10 rounded-2xl shadow-2xl">
+    <div className="w-[24rem] bg-black backdrop-blur-xl text-white p-5 font-sans border border-white/10  shadow-2xl">
       <div className="mb-6">
         <h2 className="text-xl font-semibold tracking-tight mt-9 text-center">
           API Configuration

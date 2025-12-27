@@ -2,7 +2,10 @@ import "../popup/style.css";
 import { CreateContentElement } from "@/shared/common";
 import PostModal from "./posts";
 import CommentsModal from "./comments";
-import { extractRedditPostsFromDom } from "./scripts/scrapping";
+import {
+  extractRedditCommentsFromDom,
+  extractRedditPostsFromDom,
+} from "./scripts/scrapping";
 
 export default defineContentScript({
   matches: ["*://*/*"],
@@ -35,14 +38,15 @@ export default defineContentScript({
                   };
 
                   const posts = extractRedditPostsFromDom();
+                  const comments = extractRedditCommentsFromDom();
                   return (
                     <>
                       {message.action === "post" ? (
                         <PostModal posts={posts} onRemove={onRemove} />
                       ) : (
                         <CommentsModal
-                          post={{}}
-                          comment={{}}
+                          post={posts[0]}
+                          comments={comments}
                           onRemove={onRemove}
                         />
                       )}

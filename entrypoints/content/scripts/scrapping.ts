@@ -12,12 +12,10 @@ export interface IPost {
 }
 
 export interface IComment {
-  id: number;
+  id: string;
   author: string;
   comment: string;
-  score: number;
-  time: string;
-  avatarColor: string;
+  score: string;
   permalink?: string;
 }
 
@@ -37,7 +35,7 @@ export function extractRedditPostsFromDom() {
 
     // I GOT THIS ALL FROM PROMPTING GPT RATHER THEN SEARCHING : ADMITTING IT 😭💔
 
-    // this shreddit is from the reddit post itself!if u see its css 
+    // this shreddit is from the reddit post itself!if u see its css
     const tagElement = postElement.querySelector(
       "shreddit-post-flair a span div.flair-content"
     );
@@ -72,4 +70,36 @@ export function extractRedditPostsFromDom() {
   });
 
   return postData;
+}
+
+// Got from GPT HELPPP
+export function extractRedditCommentsFromDom(): IComment[] {
+  const commentElements = document.querySelectorAll("shreddit-comment");
+  const commentsData: IComment[] = [];
+
+  commentElements.forEach((commentElement, key) => {
+    const author = commentElement.getAttribute("author") || "";
+    const permalink = commentElement.getAttribute("permalink") || "";
+    const thingId = commentElement.getAttribute("thingId");
+    const commentContentDiv = document.getElementById(
+      `${thingId}-post-rtjson-content`
+    ); //it shows a dynamic different id for every comment
+
+    const score = commentElement.getAttribute("score") || "";
+
+    if (commentContentDiv) {
+      const commentText = commentContentDiv.innerText || "";
+      commentsData.push({
+        author,
+        comment: commentText,
+        permalink,
+        id: thingId || key.toString(),
+        score,
+      });
+    } else {
+      console.warn(`Comment content not found for thingId: ${thingId}`);
+    }
+  });
+
+  return commentsData;
 }

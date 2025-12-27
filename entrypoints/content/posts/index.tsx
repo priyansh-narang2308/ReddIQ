@@ -42,6 +42,12 @@ const PostModal = ({ posts, onRemove }: PostProps) => {
     return () => clearTimeout(timer);
   }, []);
 
+  const handlePOSTclICLk = (post: IPost) => {
+    if (post.link) {
+      window.open(post.link, "_blank", "noopener,noreferrer");
+    }
+  };
+
   console.log("Formdata: ", formData);
 
   return (
@@ -121,6 +127,7 @@ const PostModal = ({ posts, onRemove }: PostProps) => {
           <div className="grid gap-4 animate-in slide-in-from-bottom-4 duration-500">
             {posts.map((post) => (
               <div
+                onClick={() => handlePOSTclICLk(post)}
                 key={post.id}
                 className="group relative bg-zinc-900/40 hover:bg-zinc-900/80 border border-zinc-800 hover:border-orange-500/30 rounded-xl p-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] cursor-pointer"
               >

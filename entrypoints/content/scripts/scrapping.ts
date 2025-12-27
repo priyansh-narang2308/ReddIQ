@@ -21,7 +21,7 @@ export interface IComment {
   permalink?: string;
 }
 
-export async function extractRedditPostsFromDom() {
+export function extractRedditPostsFromDom() {
   const postElements = Array.from(
     document.querySelectorAll<HTMLElement>("shreddit-post")
   );

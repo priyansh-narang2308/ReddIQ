@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Header from "@/shared/common/header";
 import { useFormData } from "@/shared/hooks/formData";
-import {
-  TrendingUp,
-  MessageSquare,
-  ArrowUpCircle,
-  Zap,
-  Globe,
-  ShieldCheck,
-  Calendar,
-  Loader2,
-} from "lucide-react";
+import { MessageSquare, ArrowUpCircle, Globe, Calendar } from "lucide-react";
+import { IPost } from "../scripts/scrapping";
 
 interface PostProps {
-  posts: any;
+  posts: IPost[];
   onRemove: () => void;
 }
 
@@ -52,50 +44,11 @@ const PostModal = ({ posts, onRemove }: PostProps) => {
 
   console.log("Formdata: ", formData);
 
-  const postData = [
-    {
-      id: 1,
-      tag: "Technology",
-      title: "Revolutionizing AI with Quantum Technology",
-      description:
-        "Explore groundbreaking advancements in AI and quantum computing that are shifting paradigms in data processing and neural networks.",
-      score: "4.5k",
-      comments: 128,
-      author: "u/tech_pioneer",
-      time: "2h ago",
-      color: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    },
-    {
-      id: 2,
-      tag: "Productivity",
-      title: "The Ultimate Workflow Strategy for 2024",
-      description:
-        "How to leverage modern tooling and psychological hacks to achieve deep work and massive output without burnout.",
-      score: "3.2k",
-      comments: 94,
-      author: "u/productivity_pro",
-      time: "5h ago",
-      color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-    },
-    {
-      id: 3,
-      tag: "Strategy",
-      title: "Scaling SaaS from 0 to $1M ARR",
-      description:
-        "A comprehensive breakdown of the growth loops and retention mechanics used by top-performing B2B SaaS companies.",
-      score: "5.1k",
-      comments: 245,
-      author: "u/saas_founder",
-      time: "1h ago",
-      color: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-    },
-  ];
-
   return (
     <div className="flex flex-col w-150 h-162.5 bg-zinc-950 rounded-2xl border border-zinc-800 shadow-2xl overflow-hidden transition-all duration-500">
       <Header
         title="Post Insights"
-        count={loading ? 0 : postData.length}
+        count={loading ? 0 : posts?.length}
         onRemove={onRemove}
       />
 
@@ -113,10 +66,7 @@ const PostModal = ({ posts, onRemove }: PostProps) => {
               </div>
               <div className="text-center">
                 <p className="text-zinc-100 font-bold tracking-tight">
-                  Reddiq AI Analyzing
-                </p>
-                <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mt-1">
-                  Deep Thread Insight v2.0
+                  Analyzing Posts...
                 </p>
               </div>
             </div>
@@ -128,10 +78,10 @@ const PostModal = ({ posts, onRemove }: PostProps) => {
           </div>
         ) : (
           <div className="grid gap-4 animate-in slide-in-from-bottom-4 duration-500">
-            {postData.map((post) => (
+            {posts.map((post) => (
               <div
                 key={post.id}
-                className="group relative bg-zinc-900/40 hover:bg-zinc-900/80 border border-zinc-800 hover:border-orange-500/30 rounded-xl p-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
+                className="group relative bg-zinc-900/40 hover:bg-zinc-900/80 border border-zinc-800 hover:border-orange-500/30 rounded-xl p-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] cursor-pointer"
               >
                 <div className="absolute inset-0 bg-linear-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
 
@@ -142,10 +92,6 @@ const PostModal = ({ posts, onRemove }: PostProps) => {
                         className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${post.color}`}
                       >
                         {post.tag}
-                      </span>
-                      <span className="text-zinc-500 text-xs flex items-center">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        {post.time}
                       </span>
                     </div>
                   </div>

@@ -10,3 +10,6 @@
 
 ## usign shreddit from the reddit inspect Css for its finding 
 ## using this value[2].getAttribute("post-title") in the dev tools for testing
+## Date not rendering for the post!!
+
+@@2:27

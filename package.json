@@ -2,7 +2,7 @@
   "name": "reddiq-assistant",
   "description": "ReddIQ: An AI-powered assistant for Reddit that delivers instant post and comment insights. It summarizes complex threads, analyzes sentiment, and highlights key takeaways to help you navigate Reddit more efficiently.",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "node ./scripts/wxt-dev.js",

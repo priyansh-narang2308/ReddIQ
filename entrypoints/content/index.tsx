@@ -11,8 +11,6 @@ export default defineContentScript({
   matches: [
     "https://www.reddit.com/r/*",
     "https://www.reddit.com/comments/*",
-    "https://old.reddit.com/r/*",
-    "https://old.reddit.com/comments/*",
   ],
   cssInjectionMode: "ui",
 

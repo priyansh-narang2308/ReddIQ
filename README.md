@@ -13,3 +13,5 @@
 ## Date not rendering for the post!!
 
 ## Gemini API Endpoint: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`
+
+## the comment section has 2 prompts 1 for giving the summary of the 10 most popular cometns and the next is for summary of the uestion as wked\

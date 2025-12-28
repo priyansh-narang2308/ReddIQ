@@ -107,9 +107,9 @@ export function extractRedditCommentsFromDom(): IComment[] {
 
 
 // Note: AI GENERATED!!
-export function extractJSONListFromMarkdown(markdownText: string): IPost[] {
+export function extractJSONListFromMarkdown<T>(markdownText: string): T[] {
   const jsonRegex = /```(?:json|javascript)?\n([\s\S]*?)\n```|`({[\s\S]*?})`|(\[[\s\S]*?\])/g;
-  const allPosts: IPost[] = [];
+  const allItems: T[] = [];
   let match;
 
   while ((match = jsonRegex.exec(markdownText)) !== null) {
@@ -118,9 +118,9 @@ export function extractJSONListFromMarkdown(markdownText: string): IPost[] {
       if (jsonString) {
         const parsedJson = JSON.parse(jsonString);
         if (Array.isArray(parsedJson)) {
-          allPosts.push(...parsedJson);
+          allItems.push(...parsedJson);
         } else if (typeof parsedJson === "object" && parsedJson !== null) {
-          allPosts.push(parsedJson as IPost);
+          allItems.push(parsedJson as T);
         }
       }
     } catch (error) {
@@ -128,14 +128,14 @@ export function extractJSONListFromMarkdown(markdownText: string): IPost[] {
     }
   }
 
-  if (allPosts.length === 0) {
+  if (allItems.length === 0) {
     try {
       const parsed = JSON.parse(markdownText.trim());
-      if (Array.isArray(parsed)) return parsed;
-      if (typeof parsed === "object" && parsed !== null) return [parsed as IPost];
+      if (Array.isArray(parsed)) return parsed as T[];
+      if (typeof parsed === "object" && parsed !== null) return [parsed as T];
     } catch {
     }
   }
 
-  return allPosts;
+  return allItems;
 }

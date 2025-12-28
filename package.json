@@ -12,7 +12,9 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare",
+    "test": "vitest",
+    "test-ui": "vitest --ui"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.18",
@@ -23,7 +25,8 @@
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.6.0",
     "react-markdown": "^10.1.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "vitest": "^3.1.1"
   },
   "devDependencies": {
     "@types/chrome": "^0.1.32",
@@ -31,6 +34,12 @@
     "@types/react-dom": "^19.0.2",
     "@wxt-dev/module-react": "^1.1.2",
     "typescript": "^5.6.3",
+    "vite": "^6.4.1",
     "wxt": "^0.19.29"
+  },
+  "pnpm": {
+    "overrides": {
+      "vite": "^6.4.1"
+    }
   }
 }

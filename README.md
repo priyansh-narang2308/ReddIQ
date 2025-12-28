@@ -12,3 +12,4 @@
 ## using this value[2].getAttribute("post-title") in the dev tools for testing
 ## Date not rendering for the post!!
 
+## Gemini API Endpoint: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`

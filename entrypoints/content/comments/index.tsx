@@ -4,6 +4,7 @@ import { useFormData } from "@/shared/hooks/formData";
 import Markdown from "react-markdown";
 import { Clock, ArrowUpCircle, Sparkles, Quote } from "lucide-react";
 import { IComment, IPost } from "../scripts/scrapping";
+import SearchComponent from "@/shared/common/search-component";
 
 interface CommentsProps {
   post: IPost;
@@ -56,6 +57,8 @@ The discussion is highly technical, focusing on **performance metrics** and **ar
         count={loading ? 0 : comments?.length}
         onRemove={onRemove}
       />
+
+      <SearchComponent handleSearch={()=>{}}/>
 
       <div className="flex-1 overflow-y-auto custom-scrollbar relative">
         {loading ? (

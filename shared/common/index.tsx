@@ -49,7 +49,6 @@ export const CreateContentElement = (
 
   root.render(
     <React.StrictMode>
-      <Toaster />
       <div
         className="fixed inset-0 w-screen h-screen flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-md"
         style={{
@@ -59,6 +58,12 @@ export const CreateContentElement = (
       >
         {callback(root)}
       </div>
+      <Toaster
+        containerStyle={{
+          zIndex: 1000000000,
+        }}
+        position="top-right"
+      />
     </React.StrictMode>
   );
   return root;

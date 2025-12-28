@@ -8,7 +8,7 @@ export interface IPost {
   comments?: string | null;
   author?: string | null;
   time?: string | null;
-  color?: string | null;
+  color?:string|null
 }
 
 export interface IComment {
@@ -102,4 +102,40 @@ export function extractRedditCommentsFromDom(): IComment[] {
   });
 
   return commentsData;
+}
+
+
+
+// Note: AI GENERATED!!
+export function extractJSONListFromMarkdown(markdownText: string): IPost[] {
+  const jsonRegex = /```(?:json|javascript)?\n([\s\S]*?)\n```|`({[\s\S]*?})`|(\[[\s\S]*?\])/g;
+  const allPosts: IPost[] = [];
+  let match;
+
+  while ((match = jsonRegex.exec(markdownText)) !== null) {
+    try {
+      const jsonString = match[1] || match[2] || match[3];
+      if (jsonString) {
+        const parsedJson = JSON.parse(jsonString);
+        if (Array.isArray(parsedJson)) {
+          allPosts.push(...parsedJson);
+        } else if (typeof parsedJson === "object" && parsedJson !== null) {
+          allPosts.push(parsedJson as IPost);
+        }
+      }
+    } catch (error) {
+      console.error("Error parsing JSON block from markdown:", error);
+    }
+  }
+
+  if (allPosts.length === 0) {
+    try {
+      const parsed = JSON.parse(markdownText.trim());
+      if (Array.isArray(parsed)) return parsed;
+      if (typeof parsed === "object" && parsed !== null) return [parsed as IPost];
+    } catch {
+    }
+  }
+
+  return allPosts;
 }

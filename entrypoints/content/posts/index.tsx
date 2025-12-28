@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/shared/common/header";
 import { useFormData } from "@/shared/hooks/formData";
-import { MessageSquare, ArrowUpCircle, Globe, Calendar } from "lucide-react";
-import { IPost } from "../scripts/scrapping";
+import { MessageSquare, ArrowUpCircle, Globe, Search } from "lucide-react";
+import { IPost, extractJSONListFromMarkdown } from "../scripts/scrapping";
+import SearchComponent from "@/shared/common/search-component";
+import axios from "axios";
+import toast from "react-hot-toast";
+import CustomToast from "@/shared/common/custom-toast";
 
 interface PostProps {
   posts: IPost[];
@@ -36,32 +40,94 @@ const SkeletonPost = () => (
 const PostModal = ({ posts, onRemove }: PostProps) => {
   const { formData } = useFormData();
   const [loading, setLoading] = useState(true);
+  const [aiResponse, setAiResponse] = useState<IPost[]>([]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (posts) {
+      setAiResponse(posts);
+      setLoading(false);
+    }
+  }, [posts]);
 
-  const handlePOSTclICLk = (post: IPost) => {
+  const handlePostClick = (post: IPost) => {
     if (post.link) {
       window.open(post.link, "_blank", "noopener,noreferrer");
     }
   };
 
-  console.log("Formdata: ", formData);
+  const handleSearch = async (searchQuery: string) => {
+    setLoading(true);
+    if (!searchQuery.trim()) {
+      setAiResponse(posts);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const url = `${formData?.endpoint}?key=${formData.apiKey}`;
+
+      const payload = {
+        contents: [
+          {
+            parts: [
+              {
+                text: `As a Reddit content analyst, filter the following post dataset based on the user's query.
+                       User Query: "${searchQuery}"
+
+                      Data to filter:
+                        ${JSON.stringify(posts)}
+
+                        Strict Instructions:
+                        1. Search across title, description, tags, scores, and comments.
+                        2. Return ONLY a valid JSON array of post objects that match the query intent.
+                        3. Keep the exact same object format as the input.
+                        4. If no relevant posts are found, return an empty array [].
+                        5. Do NOT include any explanations, code block markers (like \`\`\`json), or extra text.`,
+              },
+            ],
+          },
+        ],
+      };
+
+      try {
+        const response = await axios.post(url, payload, {
+          headers: { "Content-Type": "application/json" },
+        });
+
+        const data =
+          response.data.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
+
+        const extractData = extractJSONListFromMarkdown(
+          data as string
+        ) as IPost[];
+        console.log(extractData);
+        setAiResponse(extractData);
+      } catch (error) {
+        CustomToast({
+          message: "API error generating response",
+          status: "error",
+        });
+        setAiResponse([]);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col w-150 h-162.5 bg-zinc-950 rounded-2xl border border-zinc-800 shadow-2xl overflow-hidden transition-all duration-500">
       <Header
         title="Post Insights"
-        count={loading ? 0 : posts?.length}
+        count={loading ? 0 : aiResponse?.length||posts?.length}
         onRemove={onRemove}
       />
+
+      <SearchComponent handleSearch={handleSearch} />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar relative">
         {loading ? (
           <div className="relative h-full flex flex-col pt-4 animate-in fade-in zoom-in-95 duration-700">
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent animate-[shimmer_2s_infinite] opacity-50" />
+            <div className="absolute inset-x-0 top-0 h-0.5 bg-linear-to-r from-transparent via-orange-500 to-transparent animate-[shimmer_2s_infinite] opacity-50" />
 
             <div className="flex flex-col items-center justify-center py-8 space-y-4">
               <div className="relative">
@@ -110,7 +176,7 @@ const PostModal = ({ posts, onRemove }: PostProps) => {
             </div>
 
             <div className="relative space-y-4 px-2">
-              <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/50 via-transparent to-transparent pointer-events-none z-10" />
+              <div className="absolute inset-0 bg-linear-to-b from-zinc-950/50 via-transparent to-transparent pointer-events-none z-10" />
 
               <div className="opacity-60 hover:opacity-80 transition-opacity duration-500">
                 <SkeletonPost />
@@ -125,67 +191,81 @@ const PostModal = ({ posts, onRemove }: PostProps) => {
           </div>
         ) : (
           <div className="grid gap-4 animate-in slide-in-from-bottom-4 duration-500">
-            {posts.map((post) => (
-              <div
-                onClick={() => handlePOSTclICLk(post)}
-                key={post.id}
-                className="group relative bg-zinc-900/40 hover:bg-zinc-900/80 border border-zinc-800 hover:border-orange-500/30 rounded-xl p-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] cursor-pointer"
-              >
-                <div className="absolute inset-0 bg-linear-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+            {aiResponse.length > 0 ? (
+              aiResponse.map((post) => (
+                <div
+                  onClick={() => handlePostClick(post)}
+                  key={post.id}
+                  className="group relative bg-zinc-900/40 hover:bg-zinc-900/80 border border-zinc-800 hover:border-orange-500/30 rounded-xl p-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] cursor-pointer"
+                >
+                  <div className="absolute inset-0 bg-linear-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
 
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${post.color}`}
-                      >
-                        {post.tag}
-                      </span>
-                    </div>
-                  </div>
-
-                  <h3 className="text-lg font-bold text-zinc-100 group-hover:text-orange-400 transition-colors mb-2 leading-tight">
-                    {post.title}
-                  </h3>
-
-                  <p
-                    className={`text-sm mb-4 leading-relaxed ${
-                      post.description
-                        ? "text-zinc-400 line-clamp-2"
-                        : "text-zinc-500 italic"
-                    }`}
-                  >
-                    {post.description || "No description available"}
-                  </p>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-zinc-800/50">
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center space-x-1.5 text-zinc-400">
-                        <ArrowUpCircle className="w-4 h-4 text-orange-500" />
-                        <span className="text-xs font-semibold">
-                          {post.score}
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-1.5 text-zinc-400">
-                        <MessageSquare className="w-4 h-4" />
-                        <span className="text-xs font-semibold">
-                          {post.comments}
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${post.color}`}
+                        >
+                          {post.tag}
                         </span>
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-2">
-                      <div className="w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700">
-                        <Globe className="w-3 h-3 text-zinc-400" />
+                    <h3 className="text-lg font-bold text-zinc-100 group-hover:text-orange-400 transition-colors mb-2 leading-tight">
+                      {post.title}
+                    </h3>
+
+                    <p
+                      className={`text-sm mb-4 leading-relaxed ${
+                        post.description
+                          ? "text-zinc-400 line-clamp-2"
+                          : "text-zinc-500 italic"
+                      }`}
+                    >
+                      {post.description || "No description available"}
+                    </p>
+
+                    <div className="flex items-center justify-between pt-4 border-t border-zinc-800/50">
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-1.5 text-zinc-400">
+                          <ArrowUpCircle className="w-4 h-4 text-orange-500" />
+                          <span className="text-xs font-semibold">
+                            {post.score}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-1.5 text-zinc-400">
+                          <MessageSquare className="w-4 h-4" />
+                          <span className="text-xs font-semibold">
+                            {post.comments}
+                          </span>
+                        </div>
                       </div>
-                      <span className="text-xs text-zinc-500 font-medium">
-                        {post.author}
-                      </span>
+
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700">
+                          <Globe className="w-3 h-3 text-zinc-400" />
+                        </div>
+                        <span className="text-xs text-zinc-500 font-medium">
+                          {post.author}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center animate-in fade-in zoom-in-95 duration-500">
+                <div className="w-16 h-16 bg-zinc-900 rounded-2xl flex items-center justify-center mb-4 border border-zinc-800 shadow-xl">
+                  <Search className="w-8 h-8 text-zinc-600" />
+                </div>
+                <h3 className="text-zinc-100 font-semibold text-lg">
+                  No matches found
+                </h3>
+                <p className="text-zinc-500 text-sm mt-1 max-w-50">
+                  ReddIQ couldn't find any posts matching your search.
+                </p>
               </div>
-            ))}
+            )}
           </div>
         )}
       </div>
